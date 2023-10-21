@@ -1,59 +1,102 @@
-<script setup>
-import axios from 'axios'
-</script>
-
 <template>
-  <main>
-    <form @submit="submit">
-      <input type="text" v-model="email" placeholder="Email" />
-      <input type="text" v-model="password" placeholder="Пароль" />
-      <input type="submit" value="Отправить">
-    </form>
-    <form @submit="getUsers">
-      <input type="submit" value="Получить">
-    </form>
-    <div v-if="users.length > 0">
-      {{ users }}
+  <main class="flex items-center justify-center w-full h-full">
+    <div class="bg-slate-100 rounded-xl p-8 max-w-xl">
+      <van-form @submit="submit">
+        <van-cell-group inset>
+          <van-field
+            v-model="email"
+            name="Email"
+            required
+            label="Email"
+            placeholder="Email"
+            :rules="[{ required: true, message: 'Email обязателен' }]"
+          />
+          <van-field
+            v-model="password"
+            required
+            type="password"
+            name="Пароль"
+            label="Пароль"
+            placeholder="Password"
+            :rules="[{ required: true, message: 'Пароль обязателен' }]"
+          />
+        </van-cell-group>
+        <div class="mt-5 mx-4">
+          <van-button round block type="primary" native-type="submit">Войти</van-button>
+        </div>
+      </van-form>
+
+      <van-form @submit="getUsers">
+        <div class="mt-5 mx-4">
+          <van-button round block type="primary" native-type="submit">Получить</van-button>
+        </div>
+      </van-form>
+
+      <div v-if="users.length > 0">
+        {{ users }}
+      </div>
     </div>
   </main>
 </template>
 
 <script>
+import { store } from '@/store'
+import { allowMultipleToast, closeToast, showLoadingToast, showNotify } from 'vant'
+import axiosInstance, { API_URL } from '@/http'
+import axios from 'axios'
+
 export default {
   data() {
     return {
       email: '',
       password: '',
-      users: [],
+      users: store.state.users
     }
   },
   methods: {
-    submit(e) {
-      e.preventDefault();
+    submit() {
+      const loadingToast = showLoadingToast({
+        forbidClick: true,
+        duration: 0,
+        message: 'Загрузка...'
+      })
       axios
-        .post('http://127.0.0.1:8000/api/token/', {
+        .post(`${API_URL}/token/`, {
           email: this.email,
           password: this.password
         })
-        .then(res => {
+        .then((res) => {
           window.localStorage.setItem('access_token', res.data.access)
           window.localStorage.setItem('refresh_token', res.data.refresh)
+          store.commit('setIsAuthenticated', Boolean(res.data.access))
+        })
+        .catch(() => {
+          showNotify({ type: 'danger', message: 'Ошибка' })
+        })
+        .finally(() => {
+          loadingToast.close()
         })
     },
-    getUsers(e) {
-      e.preventDefault();
-      axios
-        .get('http://127.0.0.1:8000/api/users/', {
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer ' + window.localStorage.getItem('access_token')
-          }
+    getUsers() {
+      allowMultipleToast()
+      closeToast(true)
+      const loadingToast = showLoadingToast({
+        forbidClick: true,
+        duration: 0,
+        message: 'Загрузка...'
+      })
+      axiosInstance
+        .get('users/')
+        .then((res) => {
+          store.commit('setUsers', res.data)
         })
-        .then(res => {
-          console.log(res)
-          this.users = res.data
+        .catch(() => {
+          showNotify({ type: 'danger', message: 'Ошибка' })
+        })
+        .finally(() => {
+          loadingToast.close()
         })
     }
   }
-}</script>
+}
+</script>
