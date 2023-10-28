@@ -8,6 +8,9 @@ import { VantResolver } from '@vant/auto-import-resolver'
 import AutoImport from 'unplugin-auto-import/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
+// https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vite-plugin
+import vuetify from 'vite-plugin-vuetify'
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [

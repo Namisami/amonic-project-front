@@ -1,3 +1,11 @@
+@import url('https://fonts.cdnfonts.com/css/tex-gyre-adventor');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.text-blue{
+    color: #196AA6 !important;
+}
+.border-blue{
+    border-color: #196AA6 !important;;
+}

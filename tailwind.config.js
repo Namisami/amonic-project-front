@@ -3,7 +3,10 @@ module.exports = {
   purge: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
   content: [],
   theme: {
-    extend: {},
+    fontFamily: {'sans': [ 'TeXGyreAdventor',],},
+     colors: {
+            'blue': '#196AA6',
+            'orange': '#F79420',}
   },
   plugins: [],
 };
