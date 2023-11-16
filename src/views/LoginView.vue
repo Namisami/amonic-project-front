@@ -25,16 +25,6 @@
           <van-button round block type="primary" native-type="submit">Войти</van-button>
         </div>
       </van-form>
-
-      <van-form @submit="getUsers">
-        <div class="mt-5 mx-4">
-          <van-button round block type="primary" native-type="submit">Получить</van-button>
-        </div>
-      </van-form>
-
-      <div v-if="users.length > 0">
-        {{ users }}
-      </div>
     </div>
   </main>
 </template>
@@ -42,8 +32,7 @@
 <script>
 import { store } from '@/store'
 import { allowMultipleToast, closeToast, showLoadingToast, showNotify } from 'vant'
-import axiosInstance, { API_URL } from '@/http'
-import axios from 'axios'
+import axiosInstance from '@/http'
 
 export default {
   data() {
@@ -54,14 +43,16 @@ export default {
     }
   },
   methods: {
-    submit() {
+    async submit() {
+      allowMultipleToast()
+      closeToast(true)
       const loadingToast = showLoadingToast({
         forbidClick: true,
         duration: 0,
         message: 'Загрузка...'
       })
-      axios
-        .post(`${API_URL}/token/`, {
+      await axiosInstance
+        .post(`token/`, {
           email: this.email,
           password: this.password
         })
@@ -73,22 +64,12 @@ export default {
         .catch(() => {
           showNotify({ type: 'danger', message: 'Ошибка' })
         })
-        .finally(() => {
-          loadingToast.close()
-        })
-    },
-    getUsers() {
-      allowMultipleToast()
-      closeToast(true)
-      const loadingToast = showLoadingToast({
-        forbidClick: true,
-        duration: 0,
-        message: 'Загрузка...'
-      })
-      axiosInstance
+      await axiosInstance
         .get('users/')
         .then((res) => {
-          store.commit('setUsers', res.data)
+          let users = res.data
+          let user = users.find(user => user.email === this.email)
+          window.localStorage.setItem('userId', user.id)
         })
         .catch(() => {
           showNotify({ type: 'danger', message: 'Ошибка' })
@@ -99,4 +80,5 @@ export default {
     }
   }
 }
+
 </script>

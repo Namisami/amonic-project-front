@@ -4,7 +4,9 @@ export const store = createStore({
   state() {
     return {
       isAuthenticated: Boolean(window.localStorage.getItem('refresh_token')),
-      users: []
+      users: [],
+      offices: [],
+      visits: [],
     }
   },
   mutations: {
@@ -13,6 +15,12 @@ export const store = createStore({
     },
     setUsers(state, users) {
       state.users = users
-    }
+    },
+    setOffices(state, offices) {
+      state.offices = offices
+    },
+    setVisits(state, visits) {
+      state.visits = visits
+    },
   }
 })

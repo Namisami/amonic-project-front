@@ -24,21 +24,21 @@
             </thead>
             <tbody class="text-xs"> <!-- Заполнение таблицы -->
                 <tr
-                            v-for="item in desserts"
-                            :key="item.name"
-                        >
-                            <td class="border-collapse border p-2 h-4 " >{{ item.date }}</td>
-                            <td class="border-collapse border p-2 h-4 " >{{ item.logint }}</td>
-                            <td class="border-collapse border p-2 h-4 ">{{ item.logoutt }}</td>
-                            <td class="border-collapse border p-2 h-4 ">{{ item.ts }}</td>
-                            <td class="border-collapse border p-2 h-4">{{ item.ul }}</td>
-                        </tr>
+                  v-for="visit in this.visits"
+                  :key="visit.id"
+                >
+                  <td class="border-collapse border p-2 h-4 " >{{ getFullDate(visit.login_time) }}</td>
+                  <td class="border-collapse border p-2 h-4 " >{{ getTimeFromTimestamp(visit.login_time) }}</td>
+                  <td class="border-collapse border p-2 h-4 ">{{ getTimeFromTimestamp(visit.logout_time) }}</td>
+                  <td class="border-collapse border p-2 h-4 ">{{ getOnline(new Date(visit.logout_time) - new Date(visit.login_time)) }}</td>
+                  <td class="border-collapse border p-2 h-4">{{ visit.error ? visit.error.description : '' }}</td>
+                </tr>
                 <tr class=""> <!-- Цикл по строкам -->
-                    <td class="border-collapse border p-2 "></td> <!-- Номер строки -->
-                    <td class="border-collapse border  p-2"> </td> 
-                    <td class="border-collapse border  p-2"></td> 
-                    <td class="border-collapse border  p-2"></td> 
-                    <td class="border-collapse border  p-2"></td>
+                  <td class="border-collapse border p-2 "></td> <!-- Номер строки -->
+                  <td class="border-collapse border p-2"> </td> 
+                  <td class="border-collapse border p-2"></td> 
+                  <td class="border-collapse border p-2"></td> 
+                  <td class="border-collapse border p-2"></td>
                 </tr>
             </tbody>
         </table>   
@@ -46,42 +46,91 @@
   </template>
   
   <script>
+  import { onMounted, computed } from 'vue';
+  import { store } from '@/store'
+  import { allowMultipleToast, closeToast, showLoadingToast, showNotify } from 'vant'
+  import axiosInstance from '@/http'
+
+  const visits = computed(() => store.state.visits)
+
   export default {
-    data: () => ({
-      step: 1,
-        desserts: [
-          {
-            date: '03/13/2017',
-            logint: '17:15',
-            logoutt: '18:45',
-            ts: '1:30',
-            ul: ' ',
-          },
-          {
-            date: '02/13/2017',
-            logint: '8:25',
-            logoutt: '--',
-            ts: '--',
-            ul: 'Power outage',
-          },
-          {
-            date: '02/12/2017',
-            logint: '8:35',
-            logoutt: '18:45',
-            ts: '10:10',
-            ul: ' ',
-          },
-          {
-            date: '02/11/2017',
-            logint: '8:45',
-            logoutt: '18:30',
-            ts: '9:45',
-            ul: ' ',
-          },
-        ],
-    }),
+    setup() {
+      onMounted(async () => {
+    allowMultipleToast()
+    closeToast(true)
+    const loadingToast = showLoadingToast({
+      forbidClick: true,
+      duration: 0,
+      message: 'Загрузка...'
+    })
+    await axiosInstance
+      .get(`visits/`)
+      .then((res) => {
+        res.data.forEach(visit => {
+          console.log(visit.user.url.split('/').at(-2), window.localStorage.getItem('userId'))
+        })
+        store.commit('setVisits', res.data.filter(visit => visit.user.url.split('/').at(-2) == window.localStorage.getItem('userId')))
+        console.log(res.data.filter(visit => visit.user.url.split('/').at(-2) == window.localStorage.getItem('userId')))
+      })
+      .catch((err) => {
+        console.log(err)
+        showNotify({ type: 'danger', message: 'Ошибка' })
+      })
+      .finally(() => {
+        loadingToast.close()
+      })
+  })
+    },
+    data() {
+      return {
+        visits: visits,
+        step: 1,
+      }
+    },
     props: {
       source: String
+    },
+    methods: {
+      getFullDate(date) {
+        date = new Date(date)
+        let month = date.getMonth() + 1
+        if (month < 10) {
+          month = '0' + month;
+        }
+        let day = date.getDate()
+        if (day < 10) {
+          day = '0' + day;
+        }
+        let year = date.getFullYear()
+        return `${month}/${day}/${year}`
+      },  
+      getTimeFromTimestamp(date) {
+        let time = new Date(date)
+        let hours = time.getHours()
+        if (hours < 10) {
+          hours = '0' + hours;
+        }
+        let minutes = time.getMinutes()
+        if (minutes < 10) {
+          minutes = '0' + minutes;
+        }
+        return `${hours}:${minutes}`
+      },
+      getOnline(time) {
+        let hours = Math.floor(time / (1000 * 60 * 60))
+        if (hours < 10) {
+          hours = '0' + hours;
+        }  
+        let minutes = Math.floor(time / (1000 * 60)) 
+        console.log(hours)
+        if (minutes > 60) {
+          minutes = minutes % 60 
+        }
+        if (minutes < 10) {
+          minutes = '0' + minutes;
+        }
+        return `${hours}:${minutes}`
+      },
     }
   };
   </script>
