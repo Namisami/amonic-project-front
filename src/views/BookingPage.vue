@@ -54,13 +54,13 @@
                     </tr>
                 </thead>
                 <tbody id="form__body-table">
-                    <tr>
-                        <td class="h-4">John</td>
-                        <td>Doe</td>
-                        <td>1990-05-15</td>
-                        <td>AB123456</td>
-                        <td>USA</td>
-                        <td>123-456-7890</td>
+                    <tr  v-for="ticket in tickets" :key="ticket.id"> 
+                        <td class="h-4">{{ticket.first_name}}</td>
+                        <td>{{ticket.last_name}}</td>
+                        <td>-</td>
+                        <td>{{ticket.passport_number}}</td>
+                        <td>{{ticket.passport_country}}</td>
+                        <td>{{ticket.phone}}</td>
                     </tr>
                     <tr>
                         <td class="border-collapse border p-2 "></td> <!-- Номер строки -->
@@ -74,7 +74,7 @@
             </table>
         </div>
         <div class="flex justify-end gap-5 mx-10 my-4 p-2" >
-            <el-button  class="border-orange" style="width: 200px" >Remove passender</el-button>
+            <el-button   class="border-orange" style="width: 200px" >Remove passender</el-button>
         </div>
         <div class="flex justify-center gap-5 mx-10 my-4" >
             <el-button type="info" class="border-orange" style="width: 200px" >Back to Search for Flights</el-button>
@@ -82,6 +82,41 @@
         </div>
     </div>
 </template>
+ <script>
+import { onMounted, computed } from 'vue';
+import { store } from '@/store'
+import axiosInstance, { API_URL } from '@/http'
+
+const tickets = computed(() => store.state.tickets )
+
+export default {
+    setup() {
+        onMounted(() => {
+            console.log(13121312)
+            axiosInstance
+                .get('tickets/')
+                .then((res) => {
+                store.commit('setTickets', res.data)
+                console.log(res)
+                })
+                .catch((err) => {
+                console.log(err)
+                showNotify({ type: 'danger', message: 'Ошибка' })
+                })
+                .finally(() => {
+                    loadingToast.close()
+                })},
+            
+            ) 
+        },
+    data() {
+    return {
+      tickets: tickets.value,
+      selectedTicket:'',
+    }
+  },
+}
+</script>
 
 <style>
 .form__fieldset {
@@ -138,3 +173,4 @@
     justify-content: space-between;
 }
 </style>
+

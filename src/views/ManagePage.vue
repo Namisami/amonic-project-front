@@ -13,40 +13,39 @@
                           <v-row>
                             <v-col cols="12"
                               md="4">
-                              <v-select
-                                label="From [Airport list]"
-                                :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas']"
-                                variant="outlined"
-                              ></v-select>
+                                <select class="w-3/12 border" v-model="selecte">
+                                  <option  v-for="airport in airports" :key="airport.id">
+                                  {{ airport.iata_code }}
+                                  </option>
+                                </select>
                             </v-col>
 
                             <v-col cols="12"
                               md="4">
-                              <v-select text-sm
-                                label="To [Airport list]"
-                                :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas']"
-                                variant="outlined"
-                              ></v-select>
+                              <select class="w-3/12 border" v-model="selected">
+                                  <option  v-for="airport in airports" :key="airport.id">
+                                  {{ airport.iata_code}}
+                                  </option>
+                                </select>
                             </v-col>
 
                             <v-col cols="12"
                               md="4">
                               <v-select
-                                label="Sort by [Date time]"
-                                :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas']"
-                                variant="outlined"
+                                
+                                :options="airports.map(g => ({label: g.iata_code, value: g.id}))"
                               ></v-select>
                             </v-col>
                           </v-row>
                         </v-container>
                       </v-form>
-                      <v-form v-model="valid">
+                      <v-form >
                         <v-container>
                           <v-row>
                             <v-col cols="12"
                               md="4">
                               <v-text-field
-                                v-model="lastname"
+                                v-model="last_name"
                                 label="Outbound [dd/mm/yyyy]"
                                 variant="outlined"
                               ></v-text-field>
@@ -55,7 +54,7 @@
                             <v-col cols="12"
                               md="4">
                               <v-text-field
-                                v-model="lastname"
+                                v-model="last_name"
                                 label="Flight number [xxxx]"
                                 variant="outlined"
                               ></v-text-field>
@@ -72,31 +71,28 @@
                      <table class=" mx-auto h-60 mt-5 w-11/12 border border-gray-600 ">
                         <thead> <!-- Заголовок таблицы -->
                         <tr class="text-xs"> 
-                            <th class=" border  border-gray-500 p-2 w-2/12">Name</th>
-                            <th class="border-collapse border  border-gray-500 p-2 ">Last Name</th>
-                            <th class="border-collapse border  border-gray-500 p-2 ">Age</th>
-                            <th class="border-collapse border  border-gray-500 p-2  ">User Role</th>
-                            <th class="border-collapse border  border-gray-500 p-2 ">Email</th>
-                            <th class="border-collapse border  border-gray-500 p-4 ">Office</th>
-                            <th class="border-collapse border  border-gray-500 p-2  ">User Role</th>
-                            <th class="border-collapse border  border-gray-500 p-2 ">Email</th>
-                            <th class="border-collapse border  border-gray-500 p-4 ">Office</th>
+                            <th class=" border  border-gray-500 p-2 w-2/12">Date</th>
+                            <th class="border-collapse border  border-gray-500 p-2 ">Time</th>
+                            <th class="border-collapse border  border-gray-500 p-2 ">From</th>
+                            <th class="border-collapse border  border-gray-500 p-2  ">To</th>
+                            <th class="border-collapse border  border-gray-500 p-2 ">Flight Number</th>
+                            <th class="border-collapse border  border-gray-500 p-4 ">Aircraft</th>
+                            <th class="border-collapse border  border-gray-500 p-2  ">Economy Price</th>
+                            <th class="border-collapse border  border-gray-500 p-2 ">Business Price</th>
+                            <th class="border-collapse border  border-gray-500 p-4 ">First class Price</th>
                         </tr>
                         </thead>
                         <tbody class="text-xs"> <!-- Заполнение таблицы -->
-                            <tr
-                            v-for="item in desserts"
-                            :key="item.name"
-                        >
-                            <td class="border-collapse border p-2 h-4 " >{{ item.date }}</td>
-                            <td class="border-collapse border p-2 h-4 ">{{ item.time }}</td>
-                            <td class="border-collapse border p-2 h-4 ">{{ item.from }}</td>
-                            <td class="border-collapse border p-2 h-4 ">{{ item.to }}</td>
-                            <td class="border-collapse border p-2 h-4 ">{{ item.flight }}</td>
-                            <td class="border-collapse border p-2 h-4 ">{{ item.aircraft }}</td>
-                            <td class="border-collapse border p-2 h-4 ">{{ item.ep }}</td>
-                            <td class="border-collapse border p-2 h-4 ">{{ item.bp}}</td>
-                            <td class="border-collapse border p-2 h-4 ">{{ item.fp }}</td>
+                            <tr @click="choose(schedule.id)"  v-for="schedule in schedules" :key="schedule.id">
+                            <td class="border-collapse border p-2 h-4 " >{{ schedule.date }}</td>
+                            <td class="border-collapse border p-2 h-4 ">{{ schedule.time }}</td>
+                            <td class="border-collapse border p-2 h-4 ">{{ schedule.route.departure_airport }}</td>
+                            <td class="border-collapse border p-2 h-4 ">{{ schedule.route.arrival_airport }}</td>
+                            <td class="border-collapse border p-2 h-4 ">{{ schedule.flight_number }}</td>
+                            <td class="border-collapse border p-2 h-4 ">{{ schedule.aircraft.name }}</td>
+                            <td class="border-collapse border p-2 h-4 ">${{ schedule.economy_price }}</td>
+                            <td class="border-collapse border p-2 h-4 ">${{ schedule.business_price}}</td>
+                            <td class="border-collapse border p-2 h-4 ">${{ schedule.first_class_price }}</td>
                         </tr>
                             <tr class=""> <!-- Цикл по строкам -->
                                 <td class="border-collapse border p-2 "></td> <!-- Номер строки -->
@@ -113,8 +109,8 @@
                     </table>
                     <div class="flex justify-between gap-5 mx-10 my-4">
                       <div class="flex justify-start gap-5" >
-                        <el-button class="border-orange" style="width: 200px" >Cancel Flight</el-button>
-                        <el-button class="border-orange" style="width: 200px">Edit Flight</el-button>
+                        <el-button @click="cancel" class="border-orange" style="width: 200px" >Cancel Flight</el-button>
+                        <router-link to="/schedule"><el-button class="border-orange" style="width: 200px">Edit Flight</el-button></router-link>
                       </div>
                       <el-button class="border-orange" style="width: 200px" >Import Chandes</el-button>
                     </div>
@@ -125,47 +121,115 @@
   </template>
   
   <script>
+  import { ref, onMounted, computed } from 'vue';
+  import { store } from '@/store'
+  import axiosInstance, { API_URL } from '@/http'
+
+  const schedules = computed(() => store.state.schedules )
+  const airports = computed(() => store.state.airports )
   export default {
+    setup() {
+      onMounted(() => {
+        console.log(13121312)
+        axiosInstance
+          .get('schedules/')
+          .then((res) => {
+            store.commit('setSchedules', res.data)
+            console.log(res)
+          })
+          .catch((err) => {
+            console.log(err)
+            showNotify({ type: 'danger', message: 'Ошибка' })
+          })
+          .finally(() => {
+              loadingToast.close()
+          })})
+      onMounted(() => {
+        console.log(13121312)
+        axiosInstance
+          .get('airports/')
+          .then((res) => {
+            store.commit('setAirports', res.data)
+            console.log(res)
+          })
+          .catch((err) => {
+            console.log(err)
+            showNotify({ type: 'danger', message: 'Ошибка' })
+          })
+          .finally(() => {
+              loadingToast.close()
+          })})
+          },
     data: () => ({
       step: 1,
-        desserts: [
-          {
-            date: '11/10/2017',
-            time: '08:45',
-            from: 'IKA',
-            to: 'AUH',
-            flight: '1908',
-            aircraft: '320',
-            ep: '$370',
-            bp: '$499',
-            fp: '$573',
-          },
-          {
-            date: '11/10/2017',
-            time: '08:55',
-            from: 'AUH',
-            to: 'TXL',
-            flight: '1121',
-            aircraft: '310',
-            ep: '$530',
-            bp: '$715',
-            fp: '$821',
-          },
-          {
-            date: '11/10/2017',
-            time: '11:15',
-            from: 'ABZ',
-            to: 'AUH',
-            flight: '936',
-            aircraft: '330',
-            ep: '$600',
-            bp: '$499',
-            fp: '$573',
-          },
-        ],
-    }),
+        schedules: schedules,
+        airports: airports,
+        selecte: '',
+        selected: '',
+        selectedSchedule:'',
+        last_name: '',
+        items: [airports.iata_code]
+        }),
     props: {
       source: String
+    },
+    methods: {
+      choose(scheduleId) { 
+      this.selectedSchedule = scheduleId 
+     
+      console.log(this.selectedSchedule)
+      axiosInstance
+        .get(`schedules/${this.selectedSchedule}`, {
+         
+        })
+        .then((res) => {
+          console.log(res.data)
+          this.schedule = res.data
+          store.commit('setSchedule', res.data)
+        })
+        .catch(() => {
+          console.log('12312312312')
+          showNotify({ type: 'danger', message: 'Ошибка' })
+        })
+        .finally(() => {
+            loadingToast.close()
+        }
+      )
+    },
+    cancel(){
+      
+      axiosInstance
+        .patch(`${this.schedule.url}`, {
+          confirmed: false
+          
+
+        })
+        .then((res) => {
+          console.log(res.data)
+          
+        })
+        .catch(() => {
+          console.log('12312312312')
+          showNotify({ type: 'danger', message: 'Ошибка' })
+        })
+        .finally(() => {
+            loadingToast.close()
+        }
+      )
+      axiosInstance
+        .get('schedules/')
+        .then((res) => {
+          store.commit('setSchedules', res.data)
+          this.schedules = res.data
+        })
+        .catch((err) => {
+          console.log(err)
+          showNotify({ type: 'danger', message: 'Ошибка' })
+        })
+        .finally(() => {
+            loadingToast.close()
+        })
+    }
     }
   };
   </script>

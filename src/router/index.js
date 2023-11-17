@@ -12,6 +12,8 @@ import ChangeschedulePage from '../views/ChangeschedulePage.vue';
 import BillingPage from '../views/BillingPage.vue';
 import SearchPage from '../views/SearchPage.vue';
 import BookingPage from '../views/BookingPage.vue';
+import ExitPage from '../views/ExitPage.vue';
+import SummaryPage from '../views/SummaryPage.vue';
 
 import { store } from '@/store'
 
@@ -24,6 +26,7 @@ const router = createRouter({
     //   component: LoginView
     // },
     { path: '/', component: LoginPage },
+    { path: '/login', component: LoginView },
     { path: '/system', component: SystemPage },
     { path: '/adduser', component: AdduserPage},
     { path: '/logout', component: LogoutPage },
@@ -35,6 +38,8 @@ const router = createRouter({
     { path: '/billing', component: BillingPage },
     { path: '/booking', component: BookingPage },
     { path: '/search', component: SearchPage },
+    { path: '/exit', component: ExitPage },
+    { path: '/summary', component: SummaryPage},
   ]
 })
 
