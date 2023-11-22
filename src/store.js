@@ -7,6 +7,7 @@ export const store = createStore({
       users: [],
       offices: [],
       visits: [],
+      user: {},
     }
   },
   mutations: {
@@ -15,6 +16,9 @@ export const store = createStore({
     },
     setUsers(state, users) {
       state.users = users
+    },
+    setUser(state, user) {
+      state.user = user
     },
     setOffices(state, offices) {
       state.offices = offices

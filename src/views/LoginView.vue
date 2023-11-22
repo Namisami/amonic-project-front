@@ -61,7 +61,8 @@ export default {
           window.localStorage.setItem('refresh_token', res.data.refresh)
           store.commit('setIsAuthenticated', Boolean(res.data.access))
         })
-        .catch(() => {
+        .catch((err) => {
+          console.log(err)
           showNotify({ type: 'danger', message: 'Ошибка' })
         })
       await axiosInstance
@@ -77,6 +78,9 @@ export default {
         .finally(() => {
           loadingToast.close()
         })
+      if (window.localStorage.getItem('error')) {
+        window.location.href = 'logout'
+      }
     }
   }
 }

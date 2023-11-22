@@ -5,10 +5,10 @@
             <img src="close.svg" alt="">
         </div> 
         <p class="block p-2 max-w-lg mx-auto">No logout detected for your last login</p>
-        <van-form class="p-2 max-w-lg mx-auto"  @submit="onSubmit">
+        <van-form class="p-2 max-w-lg mx-auto" @submit="onSubmit">
             <van-cell-group inset>
                 <van-field
-                    v-model="message"
+                    v-model="description"
                     rows="5"
                     autosize
                     label="Reason:"
@@ -19,22 +19,64 @@
                 />
             </van-cell-group>
             <div class="flex justify-center gap-5 m-6">
-                <van-radio-group class="flex justify-start gap-2" v-model="checked">
-                    <van-radio name="1">Software Crаsh</van-radio>
-                    <van-radio name="2">Server Crash</van-radio>
+                <van-radio-group class="flex justify-start gap-2" v-model="reason">
+                    <van-radio name="SOFT">Software Crаsh</van-radio>
+                    <van-radio name="SYST">Server Crash</van-radio>
                 </van-radio-group>
-                <el-button type="primary" style="background-color: none;" >Confirm</el-button>
+                <el-button @click="onSubmit" type="primary" style="background-color: none;" >Confirm</el-button>
             </div>
         </van-form>
     </div>
 </template>
 <script>
-    import { ref } from 'vue';
+import { allowMultipleToast, closeToast, showLoadingToast, showNotify } from 'vant'
+import axiosInstance from '@/http'
 
-    export default {
-     setup() {
-    const checked = ref('');
-    return { checked };
+export default {
+  data() {
+    return {
+      description: '',
+      reason: '',
+    }
   },
-    };
+  methods: {
+    async onSubmit() {
+      allowMultipleToast()
+      closeToast(true)
+      const loadingToast = showLoadingToast({
+        forbidClick: true,
+        duration: 0,
+        message: 'Загрузка...'
+      })
+      await axiosInstance
+        .get(`visits?user=${window.localStorage.getItem('userId')}`)
+        .then(async res => {
+          let last_visit = res.data.pop()
+          console.log(last_visit) 
+          let user = last_visit.user
+          await axiosInstance
+            .post('errors/', {
+              user: `${user.url}`,
+              description: this.description,
+              reason: this.reason,
+            })
+            .then(async res => {
+              console.log(res.data.id)
+              await axiosInstance
+                .patch(`${last_visit.url}`, {
+                  error: res.data.id,
+                })
+                .then(res => {
+                  window.localStorage.removeItem('error')
+                  // window.location.href = 'user'
+                })
+                .catch(err => console.log(err))
+            })
+            .catch(err => console.log(err))
+        })
+        .catch(err => console.log(err))
+        .finally(() => loadingToast.close())
+    }
+  }
+}
 </script>

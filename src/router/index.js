@@ -12,19 +12,14 @@ import ChangeschedulePage from '../views/ChangeschedulePage.vue';
 import BillingPage from '../views/BillingPage.vue';
 import SearchPage from '../views/SearchPage.vue';
 import BookingPage from '../views/BookingPage.vue';
-
-import { store } from '@/store'
+import ExitPage from '../views/ExitPage.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    // {
-    //   path: '/login',
-    //   name: 'login',
-    //   component: LoginView
-    // },
     { path: '/', component: LoginPage },
     { path: '/login', component: LoginView },
+    { path: '/exit', component: ExitPage },
     { path: '/system', component: SystemPage },
     { path: '/adduser', component: AdduserPage},
     { path: '/logout', component: LogoutPage },
