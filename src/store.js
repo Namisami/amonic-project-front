@@ -8,6 +8,9 @@ export const store = createStore({
       offices: [],
       visits: [],
       user: {},
+      airports: [],
+      cabinTypes: [],
+      schedules: [],
     }
   },
   mutations: {
@@ -25,6 +28,15 @@ export const store = createStore({
     },
     setVisits(state, visits) {
       state.visits = visits
+    },
+    setAirports(state, airports) {
+      state.airports = airports
+    },
+    setCabinTypes(state, cabinTypes) {
+      state.cabinTypes = cabinTypes
+    },
+    setSchedules(state, schedules) {
+      state.schedules = schedules
     },
   }
 })
