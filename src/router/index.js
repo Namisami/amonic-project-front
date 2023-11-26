@@ -21,8 +21,6 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     { path: '/', component: LoginPage },
-    { path: '/login', component: LoginView },
-    { path: '/exit', component: ExitPage },
     { path: '/system', component: SystemPage },
     { path: '/adduser', component: AdduserPage },
     { path: '/logout', component: LogoutPage },
@@ -34,9 +32,10 @@ const router = createRouter({
     { path: '/billing', component: BillingPage },
     { path: '/booking', component: BookingPage },
     { path: '/search', component: SearchPage },
-    { path: '/summary-report', component: SummaryReportPage },
-    { path: '/flight-satisfaction-survey-report', component: FlightSatisfactionSurveyReport },
-    { path: '/purchase-amenities', component: PurchaseAmenities }
+    { path: '/exit', component: ExitPage },
+    { path: '/report', component: SummaryReportPage },
+    { path: '/surveyreport', component: FlightSatisfactionSurveyReport },
+    { path: '/amentity', component: PurchaseAmenities },
   ]
 })
 

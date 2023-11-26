@@ -4,7 +4,7 @@
       <p class="text-sm text-blue" >Add user</p>
       <img src="close.svg" alt="">
     </div>
-      <van-form class="p-2" @submit="onSubmit">
+      <van-form class="p-2" @submit="submit">
   <van-cell-group inset class="w-xl">
     <van-field style=""
       v-model="email"
@@ -15,31 +15,31 @@
       :rules="[{ required: true, message: 'Email is required' }]"
     />
     <van-field style=""
-      v-model="firstname"
+      v-model="first_name"
       name="firstname"
       label="First Name"
       placeholder=""
-      :rules="[{ required: true, message: 'First Name is required' }]"
     />
     <van-field style=""
-      v-model="lastname"
+      v-model="last_name"
       name="lastname"
       label="Last Name"
       placeholder=""
-      :rules="[{ required: true, message: 'Last Name is required' }]"
+      
     />
     <div class="text-sm flex justify-start gap-2 m-4 border-b">
             <p>Office</p>
             <select class="w-11/12 h-8 " v-model="selected">
-                <option disabled>s</option>
-                <option >ggg</option>
+                <option v-for="office in offices" :key="office.id">
+                {{ office.title }}
+                </option>
             </select>
     </div> 
     <div class="text-sm flex justify-between  gap-2 m-4 ">
             <p>Birth Date</p>
             <el-date-picker 
               class="border-blue"
-              v-model="value2"
+              v-model="date"
               type="date"
               placeholder="Pick a Date"
               format="YYYY/MM/DD"
@@ -56,20 +56,71 @@
     />
   </van-cell-group>
   <div class="flex justify-center gap-5 m-6" >
-    <el-button style="width: 200px" >Save</el-button>
+  <router-link to="/system">
+    <el-button @click="submit" style="width: 200px" >Save</el-button>
+  </router-link>
+  <router-link to="/system">
     <el-button style="width: 200px;background-color:#F56C6C" type="danger" >Cancel</el-button>
+  </router-link>
   </div>
-
 </van-form>
+</div>
+</template>
 
- </div>
-</template
->
+<script>
 
-<script lang="ts" setup>
+import { ref, onMounted, computed } from 'vue';
+import { store } from '@/store'
+import axiosInstance, { API_URL } from '@/http'
 
-import { ref } from 'vue'
 
-const value2 = ref('')
+const offices = computed(() => store.state.offices)
 
+export default {
+    components:{
+  },
+setup() {
+    onMounted(() => {
+      axiosInstance
+        .get('offices/')
+        .then((res) => {
+          store.commit('setOffices', res.data)
+          console.log(res)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    })
+},
+  data() {
+    return {
+      step: 1,
+      email: '',
+      first_name: '',
+      last_name:'',
+      password : '',
+      selected: '',
+      date: '',
+      offices: offices,
+    }
+  },
+  props: {
+    source: String
+  },
+  methods: {
+    submit() {     
+      let officeUrl = this.offices.find(office => office.title === this.selected).url
+      axiosInstance
+        .post('users/', {
+          email: this.email,
+          first_name: this.first_name,
+          last_name: this.last_name,
+          office: officeUrl, 
+          date_of_birth: this.date,
+          password: this.password
+        })
+        .then(res => console.log(res))
+    },
+  },
+}
 </script>

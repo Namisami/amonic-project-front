@@ -7,7 +7,7 @@
             </a>
         </div>
         <div class="flex justify-start gap-2  p-2">
-            <a class="block  text-sm text-cyan-700" >Exit</a>
+            <a @click="exit" class="block  text-sm text-cyan-700" >Exit</a>
         </div> 
         <p class="text-sm py-4 px-8">Hi, {{ user.first_name }}, Welcome to AMONIC Airlines</p>
         <div class="flex justify-end gap-6 px-12 pt-4 pb-9">
@@ -184,6 +184,22 @@
         window.localStorage.removeItem('refresh')
         window.localStorage.removeItem('userId')
         window.localStorage.setItem('error', 'ERROR')
+        window.location.href = 'exit'
+      },
+      async exit() {
+        await axiosInstance
+          .post('logout/')
+          .then(res => console.log(res))
+          .catch(err => console.log(err))
+        await axiosInstance
+          .post(`token/blacklist/`, {
+            refresh: `${window.localStorage.getItem('refresh')}`
+          })
+          .catch(err => console.log(err))
+        store.commit('setIsAuthenticated', false)
+        window.localStorage.removeItem('access')
+        window.localStorage.removeItem('refresh')
+        window.localStorage.removeItem('userId')
         window.location.href = 'exit'
       }
     }

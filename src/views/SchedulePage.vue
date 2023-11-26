@@ -12,46 +12,51 @@
                             <v-row class="ml-5 mt-4 mb-4">
                                 <v-row class="ml-2 mt-2"> 
                                     <p>From:</p> 
-                                    <span class="font-weight-bold ml-3">AUH</span>
+                                    <span class="font-weight-bold ml-3">{{ schedule.route }}</span>
                                 </v-row>
                                 <v-row class="ml-1 mt-2"> 
                                     <p>To:</p> 
-                                    <span class="font-weight-bold ml-3">ADE</span>
+                                    <span class="font-weight-bold ml-3">{{ schedule.route }}</span>
                                 </v-row>
                                 <v-row class="ml-1 mt-2"> 
                                     <p>Aircraft:</p> 
-                                    <span class="font-weight-bold ml-3">Boeng 739</span>
+                                    <span class="font-weight-bold ml-3">{{ schedule.aircraft }}</span>
                                 </v-row>
                             </v-row>
                         </v-container>
                     </v-card>
-                    <v-form class="text-sm" v-model="valid">
+                    <v-form class="text-sm" @submit="submit">
                         <v-container class="w-10/12">
                           <v-row class="ml-4 mt-4 mb-4">
                             <v-col cols="12"
+                              md="4">                 
+                              <p>Date:</p>
+                              <el-date-picker 
+                                class="border-blue"
+                                v-model="date"
+                                type="date"
+                                placeholder="Pick a Date"
+                                format="YYYY/MM/DD"
+                                value-format="YYYY-MM-DD"
+                              />
+
+
+                            </v-col>
+
+                            <v-col cols="12"
                               md="4">
+                              <p>Time:</p>
                               <v-text-field
-                                class="text-sm"
-                                v-model="lastname"
-                                label="Date [dd/mm/yyyy]"
+                                v-model="time"
                                 variant="outlined"
                               ></v-text-field>
                             </v-col>
 
                             <v-col cols="12"
                               md="4">
+                              <p>Economy Price:</p>
                               <v-text-field
-                                v-model="lastname"
-                                label="Time [11:18]"
-                                variant="outlined"
-                              ></v-text-field>
-                            </v-col>
-
-                            <v-col cols="12"
-                              md="4">
-                              <v-text-field
-                                v-model="lastname"
-                                label="Economy price $[530]"
+                                v-model="economy_price"
                                 variant="outlined"
                               ></v-text-field>
                             </v-col>
@@ -59,7 +64,7 @@
                         </v-container>
                     </v-form>
                     <div class="flex justify-end gap-5 mx-6" >
-                        <el-button class="border-orange" style="width: 200px" >Update</el-button>
+                        <el-button @click="submit(schedule.id)" class="border-orange" style="width: 200px" >Update</el-button>
                         <el-button type="danger" class="border-orange" style="width: 200px">Cancel</el-button>
                     </div> 
   
@@ -68,70 +73,72 @@
 </template>
   
   <script>
-  export default {
-    data: () => ({
-      step: 1,
-        desserts: [
-          {
-            date: '11/10/2017',
-            time: '08:45',
-            from: 'IKA',
-            to: 'AUH',
-            flight: '1908',
-            aircraft: '320',
-            ep: '$370',
-            bp: '$499',
-            fp: '$573',
-          },
-          {
-            date: '11/10/2017',
-            time: '08:55',
-            from: 'AUH',
-            to: 'TXL',
-            flight: '1121',
-            aircraft: '310',
-            ep: '$530',
-            bp: '$715',
-            fp: '$821',
-          },
-          {
-            date: '11/10/2017',
-            time: '11:15',
-            from: 'ABZ',
-            to: 'AUH',
-            flight: '936',
-            aircraft: '330',
-            ep: '$600',
-            bp: '$499',
-            fp: '$573',
-          },
-        ],
-    }),
-    props: {
-      source: String
+  import { ref, onMounted, computed } from 'vue';
+import { store } from '@/store'
+import axiosInstance, { API_URL } from '@/http'
+
+const schedule = computed(() => store.state.schedule )
+// console.log('SSSDSSDA', user.value.first_name)
+
+export default {
+  // setup() {
+  //   onMounted(() => {
+  //     console.log('SETUP')
+  //     console.log(this.user)
+  //     axiosInstance
+  //       .get(`users/${user.id}/`, {
+         
+  //       })
+  //       .then((res) => {
+  //         console.log(res.data)
+  //       })
+  //       .catch(() => {
+  //         console.log('12312312312')
+  //         showNotify({ type: 'danger', message: 'Ошибка' })
+  //       })
+  //       .finally(() => {
+  //           loadingToast.close()
+  //       }
+  //     )
+  //   })
+// },
+data: () => ({
+    schedule: schedule.value,
+    date: schedule.value.date,
+    time: schedule.value.time,
+    economy_price: schedule.value.economy_price,
+    selectedSchedule:'',
+  }),
+  props: {
+    source: String
+  },
+  methods:{
+    submit(scheduleId){
+      this.selectedSchedule = scheduleId 
+     
+      console.log(this.selectedSchedule)
+      console.log(this.checked)
+      axiosInstance
+        .patch(`schedules/${this.selectedSchedule}/`, {
+          date: this.date,
+          time: this.time,
+          economy_price: this.economy_price
+        })
+        .then((res) => {
+          console.log(res.data)
+          store.commit('setSchedule', res.data)
+          // this.user = res.data
+        })
+        .catch(() => {
+          console.log('12312312312')
+          showNotify({ type: 'danger', message: 'Ошибка' })
+        })
+        .finally(() => {
+            loadingToast.close()
+        }
+      )
+    },
     }
-  };
+  }
+  
   </script>
-<style>
-.txt{
-    margin-top: 20px;
-    margin-left: 58px;
-}
-.txt-1{
-    margin-left: 450px;
-    margin-top: 10px;
-}
-.txt2{
-    margin-left: 40px;
-}
-.table{
-    margin-left: 58px;
-    margin-right: 40px;
-}
-.btn1{
-  margin-left: 600px;
-}
-.btn2{
-  margin-left: 30px;
-}
-</style>

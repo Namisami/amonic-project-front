@@ -11,14 +11,28 @@ export const store = createStore({
       airports: [],
       cabinTypes: [],
       schedules: [],
+      returnSchedules: [],
+      offices: [],
+      tickets: [],
+      schedule: [],
+      airports: [],
+      roles: [],
+
+      bookOut: {},
+      bookReturn: {},
+    }
+  },
+  getters: {
+    getSchedules(state) {
+      return state.schedules
     }
   },
   mutations: {
     setIsAuthenticated(state, isAuthenticated) {
       state.isAuthenticated = isAuthenticated
     },
-    setUsers(state, users) {
-      state.users = users
+    setUsers(state, usersList) {
+      state.users = usersList
     },
     setUser(state, user) {
       state.user = user
@@ -35,8 +49,27 @@ export const store = createStore({
     setCabinTypes(state, cabinTypes) {
       state.cabinTypes = cabinTypes
     },
-    setSchedules(state, schedules) {
-      state.schedules = schedules
+    setSchedules(state, schedulesList) {
+      state.schedules = schedulesList
+    },
+    setSchedule(state, schedule) {
+      state.schedule = schedule
+    },
+    setTickets(state, tickets){
+      state.tickets = tickets
+    },
+    setReturnSchedules(state, returnSchedules){
+      state.returnSchedules = returnSchedules
+    },
+    setRoles(state, roles){
+      state.roles = roles
+    },
+    setBookOut(state, bookOutObj){
+      state.bookOut = bookOutObj
+      console.log(bookOutObj)
+    },
+    setBookReturn(state, bookReturnObj){
+      state.bookReturn = bookReturnObj
     },
   }
 })

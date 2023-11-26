@@ -68,7 +68,11 @@ export default {
                 })
                 .then(res => {
                   window.localStorage.removeItem('error')
-                  // window.location.href = 'user'
+                  if (user.role.title === 'Administrator') {
+                    window.location.href = 'system'
+                  } else {
+                    window.location.href = 'user'
+                  }
                 })
                 .catch(err => console.log(err))
             })
