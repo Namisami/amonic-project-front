@@ -13,6 +13,7 @@ import BillingPage from '../views/BillingPage.vue'
 import SearchPage from '../views/SearchPage.vue'
 import BookingPage from '../views/BookingPage.vue'
 import ExitPage from '../views/ExitPage.vue';
+import SummaryPage from '@/views/SummaryPage.vue'
 import SummaryReportPage from '@/views/SummaryReportPage.vue'
 import FlightSatisfactionSurveyReport from '@/views/FlightSatisfactionSurveyReport.vue'
 import PurchaseAmenities from '@/views/PurchaseAmenities.vue'
@@ -33,6 +34,7 @@ const router = createRouter({
     { path: '/booking', component: BookingPage },
     { path: '/search', component: SearchPage },
     { path: '/exit', component: ExitPage },
+    { path: '/summary', component: SummaryPage },
     { path: '/report', component: SummaryReportPage },
     { path: '/surveyreport', component: FlightSatisfactionSurveyReport },
     { path: '/amentity', component: PurchaseAmenities },

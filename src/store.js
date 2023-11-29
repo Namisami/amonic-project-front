@@ -17,6 +17,7 @@ export const store = createStore({
       schedule: [],
       airports: [],
       roles: [],
+      allTickets: [],
 
       bookOut: {},
       bookReturn: {},
@@ -57,6 +58,9 @@ export const store = createStore({
     },
     setTickets(state, tickets){
       state.tickets = tickets
+    },
+    setAllTickets(state, tickets){
+      state.allTickets = tickets
     },
     setReturnSchedules(state, returnSchedules){
       state.returnSchedules = returnSchedules

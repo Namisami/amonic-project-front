@@ -16,7 +16,9 @@
 						</div>
 						<div class="flex justify-center gap-5 m-6" >
 							<el-button @click="buy" style="width: 200px" >Issue Tickets</el-button>
-							<el-button style="width: 200px;background-color:#F56C6C" type="danger" >Cancel</el-button>
+							<router-link to="/booking">
+								<el-button style="width: 200px;background-color:#F56C6C" type="danger" >Cancel</el-button>
+							</router-link>
 						</div>
 					</form>
         </div>

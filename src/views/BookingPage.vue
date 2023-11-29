@@ -14,7 +14,7 @@
                 <p>Flight Number: {{ bookOut?.flight_number }}</p>
             </fieldset>
             
-            <fieldset v-if="bookReturn" class="form__info text-sm flex justify-between gap-2">
+            <fieldset v-if="bookReturn.value" class="form__info text-sm flex justify-between gap-2">
                 <legend class="form__legend">Return Flight Details</legend>
                 <p>From: {{ bookReturn?.route?.departure_airport.iata_code }}</p>
                 <p>To: {{ bookReturn?.route?.arrival_airport.iata_code }}</p>
@@ -160,9 +160,9 @@ export default {
         })
       }
     },
-    buy() {
+    async buy() {
       let ticketsList = []
-      this.tickets.forEach(async (ticket) => {
+      for (let ticket of this.tickets) {
         await axiosInstance
           .get(`cabin_types?name=${this.bookOut.seat_class}`)
           .then(res => this.cabinType = res.data[0])
@@ -191,27 +191,29 @@ export default {
             ticketsList.push(res.data)
           })
           .catch(err => console.log(err))
-        let bodyReturn = {
-            user: user.value.url,
-            schedule: this.bookReturn.url,
-            cabin_type: this.cabinType.url,
-            first_name: ticket.first_name,
-            last_name: ticket.last_name,
-            email: user.value.email,
-            phone: ticket.phone,
-            passport_number: ticket.passport_number,
-            passport_country: this.countryPost.url,
-            booking_reference: `${Date.now()}`,
-            confirmed: false,
-          }
-        await axiosInstance
-          .post('tickets/', bodyReturn)
-          .then(res => {
-            console.log(res.data)
-            ticketsList.push(res.data)
-          })
-          .catch(err => console.log(err))
-        })
+        if (this.bookReturn.value) {
+          let bodyReturn = {
+              user: user.value.url,
+              schedule: this.bookReturn.url,
+              cabin_type: this.cabinType.url,
+              first_name: ticket.first_name,
+              last_name: ticket.last_name,
+              email: user.value.email,
+              phone: ticket.phone,
+              passport_number: ticket.passport_number,
+              passport_country: this.countryPost.url,
+              booking_reference: `${Date.now()}`,
+              confirmed: false,
+            }
+          await axiosInstance
+            .post('tickets/', bodyReturn)
+            .then(res => {
+              console.log(res.data)
+              ticketsList.push(res.data)
+            })
+            .catch(err => console.log(err))
+        }
+      }
       console.log(ticketsList)
       store.commit('setTickets', ticketsList)
     },

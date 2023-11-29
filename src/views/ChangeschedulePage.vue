@@ -1,65 +1,88 @@
 <template>
-    <div class="font-sans  mx-auto my-4 pb-4 rounded-md border border-blue max-w-xl">
-        <div class="flex justify-between border-blue border-b p-2" style="border-color #f79420;">
-            <p class="text-sm font-bold text-blue" >Apply Schedule Changes</p>
-            <img src="close.svg" alt="">
-        </div>
-        <div class="mt-4 mx-6">
-            <p class="text-sm my-3">Please select a text file with the changes</p>
-                <el-upload
-                        ref="upload"
-                        class="upload-demo "
-                        action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-                        :limit="1"
-                        :on-exceed="handleExceed"
-                        :auto-upload="false"
-                    >
-                        <template #trigger>
-                        <el-button type="primary">select file</el-button>
-                        </template>
-                        <el-button class="ml-3" type="success" @click="submitUpload">
-                        upload to server
-                        </el-button>
-                        <template #tip>
-                        <div class="el-upload__tip text-red">
-                            limit 1 file, new file will cover the old file
-                        </div>
-                        </template>
-                    </el-upload>
-                    <p class="text-sm ms-3">Results</p>
-                    <ul class="text-sm border p-4">
-                        <li class="flex justify-between gap-4 mb-2">
-                            <p>Successful Changes Applied</p>
-                            <p>[]</p>
-                        </li>
-                        <li class="flex justify-between gap-4 mb-2">
-                            <p>Duplicate Records Discarded</p>
-                            <p>[]</p>
-                        </li>
-                        <li class="flex justify-between gap-4 mb-2">
-                            <p>Records With Missing Fields Discarded</p>
-                            <p>[]</p>
-                        </li>
-                    </ul>
-            
-            </div>
+  <div class="font-sans  mx-auto my-4 pb-4 rounded-md border border-blue max-w-xl">
+    <div class="flex justify-between border-blue border-b p-2" style="border-color #f79420;">
+      <p class="text-sm font-bold text-blue">Apply Schedule Changes</p>
+      <img src="close.svg" alt="">
     </div>
+    <div class="mt-4 mx-6">
+      <p class="text-sm my-3">Please select a text file with the changes</p>
+      <input type="file" @change="onFileChanged($event)" accept="csv/*" capture />
+      <el-button @click="submit">Import</el-button>
+      <p class="text-sm ms-3">Results</p>
+      <ul class="text-sm border p-4">
+        <li class="flex justify-between gap-4 mb-2">
+          <p>Successful Changes Applied</p>
+          <p>{{ successful }}</p>
+        </li>
+        <li class="flex justify-between gap-4 mb-2">
+          <p>Duplicate Records Discarded</p>
+          <p>{{ duplicate }}</p>
+        </li>
+        <li class="flex justify-between gap-4 mb-2">
+          <p>Records With Missing Fields Discarded</p>
+          <p>{{ errors }}</p>
+        </li>
+      </ul>
+    </div>
+  </div>
 </template>
-<script setup lang="ts">
+<script>
 import { ref } from 'vue'
-import { genFileId } from 'element-plus'
-import type { UploadInstance, UploadProps, UploadRawFile } from 'element-plus'
+import axiosInstance from '@/http'
 
-const upload = ref<UploadInstance>()
-
-const handleExceed: UploadProps['onExceed'] = (files) => {
-  upload.value!.clearFiles()
-  const file = files[0] as UploadRawFile
-  file.uid = genFileId()
-  upload.value!.handleStart(file)
-}
-
-const submitUpload = () => {
-  upload.value!.submit()
+const file = ref();
+const form = ref();
+export default {
+  data() {
+    return {
+      file: '',
+      successful: 0,
+      duplicate: 0,
+      errors: 0
+    }
+  },
+  methods: {
+    async submit() {
+      console.log(this.file)
+      let formData = new FormData();
+      formData.append('file', this.file);
+      await axiosInstance
+        .post('schedules/import_schedule/', 
+              formData,
+              {
+                withCredentials: true,
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                  'Content-Disposition': 'attachment',                  
+                  'Authorization': `Bearer ${window.localStorage.getItem('access_token')}`,
+                },
+              }
+        )
+        .then(res => {
+          this.successful = res.data.successful
+          this.duplicate = res.data.duplicate
+          this.errors = res.data.errors
+        })
+        .catch(err => console.log(err))
+    },
+    onFileChanged($event) {
+      const target = $event.target;
+      if (target && target.files) {
+        file.value = target.files[0];
+      }
+      this.file = file.value
+    },
+    async saveImage() {
+      if (file.value) {
+        try {
+        } catch (error) {
+          console.error(error);
+          form.value?.reset();
+          file.value = null;
+        } finally {
+        }
+      }
+    }
+  }
 }
 </script>

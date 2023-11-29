@@ -12,15 +12,15 @@
                             <v-row class="ml-5 mt-4 mb-4">
                                 <v-row class="ml-2 mt-2"> 
                                     <p>From:</p> 
-                                    <span class="font-weight-bold ml-3">{{ schedule.route }}</span>
+                                    <span class="font-weight-bold ml-3">{{ schedule.route.departure_airport.iata_code }}</span>
                                 </v-row>
                                 <v-row class="ml-1 mt-2"> 
                                     <p>To:</p> 
-                                    <span class="font-weight-bold ml-3">{{ schedule.route }}</span>
+                                    <span class="font-weight-bold ml-3">{{ schedule.route.arrival_airport.iata_code }}</span>
                                 </v-row>
                                 <v-row class="ml-1 mt-2"> 
                                     <p>Aircraft:</p> 
-                                    <span class="font-weight-bold ml-3">{{ schedule.aircraft }}</span>
+                                    <span class="font-weight-bold ml-3">{{ schedule.aircraft.name }}</span>
                                 </v-row>
                             </v-row>
                         </v-container>
@@ -39,10 +39,7 @@
                                 format="YYYY/MM/DD"
                                 value-format="YYYY-MM-DD"
                               />
-
-
                             </v-col>
-
                             <v-col cols="12"
                               md="4">
                               <p>Time:</p>
@@ -65,15 +62,17 @@
                     </v-form>
                     <div class="flex justify-end gap-5 mx-6" >
                         <el-button @click="submit(schedule.id)" class="border-orange" style="width: 200px" >Update</el-button>
-                        <el-button type="danger" class="border-orange" style="width: 200px">Cancel</el-button>
+                        <router-link to="/manage">
+                          <el-button type="danger" class="border-orange" style="width: 200px">Cancel</el-button>
+                        </router-link>
                     </div> 
   
   </div>
 
 </template>
   
-  <script>
-  import { ref, onMounted, computed } from 'vue';
+<script>
+import { ref, onMounted, computed } from 'vue';
 import { store } from '@/store'
 import axiosInstance, { API_URL } from '@/http'
 
@@ -129,15 +128,10 @@ data: () => ({
           store.commit('setSchedule', res.data)
           // this.user = res.data
         })
-        .catch(() => {
-          console.log('12312312312')
-          showNotify({ type: 'danger', message: 'Ошибка' })
+        .catch((err) => {
+          console.log(err)
         })
-        .finally(() => {
-            loadingToast.close()
-        }
-      )
-    },
+      },
     }
   }
   
