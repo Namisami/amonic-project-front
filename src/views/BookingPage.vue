@@ -14,7 +14,7 @@
                 <p>Flight Number: {{ bookOut?.flight_number }}</p>
             </fieldset>
             
-            <fieldset v-if="Object.keys(bookReturn) > 0" class="form__info text-sm flex justify-between gap-2">
+            <fieldset v-if="bookReturn" class="form__info text-sm flex justify-between gap-2">
                 <legend class="form__legend">Return Flight Details</legend>
                 <p>From: {{ bookReturn?.route?.departure_airport.iata_code }}</p>
                 <p>To: {{ bookReturn?.route?.arrival_airport.iata_code }}</p>
@@ -90,7 +90,9 @@
         </div>
         <div class="flex justify-center gap-5 mx-10 my-4" >
             <el-button type="info" class="border-orange" style="width: 200px" >Back to Search for Flights</el-button>
-            <el-button @click="buy" type="primary" style="width: 200px">Confirm Booking</el-button>
+            <router-link to="/billing">
+              <el-button @click="buy" type="primary" style="width: 200px">Confirm Booking</el-button>
+            </router-link>
         </div>
     </div>
 </template>
@@ -159,6 +161,7 @@ export default {
       }
     },
     buy() {
+      let ticketsList = []
       this.tickets.forEach(async (ticket) => {
         await axiosInstance
           .get(`cabin_types?name=${this.bookOut.seat_class}`)
@@ -179,47 +182,38 @@ export default {
             passport_number: ticket.passport_number,
             passport_country: this.countryPost.url,
             booking_reference: `${Date.now()}`,
-            confirmed: true,
+            confirmed: false,
           }
-        console.log(body)
         await axiosInstance
           .post('tickets/', body)
-          .then(res => console.log(res.data))
+          .then(res => {
+            console.log(res.data)
+            ticketsList.push(res.data)
+          })
           .catch(err => console.log(err))
-      })
-            
-
-      // if (this.isReturn) {
-      //   axiosInstance
-      //     .get('schedules/', {
-      //       params: {
-      //         arrival: this.departureAirport ? this.departureAirport : null,
-      //         departure: this.arrivalAirport ? this.arrivalAirport : null,
-      //         date: this.returnDate ? this.returnDate : null,
-      //         date_range: this.returnDateRange ? this.returnDateRange : null
-      //       }
-      //     })
-      //     .then((res) => {
-      //       if (this.cabinType === 'first') {
-      //         res.data.forEach(schedule => {
-      //           schedule.economy_price = Math.floor(schedule.economy_price * 1.35 * 1.3)
-      //         });
-      //       } else if (this.cabinType === 'business') {
-      //         res.data.forEach(schedule => {
-      //           schedule.economy_price = Math.floor(schedule.economy_price * 1.35)
-      //         });
-      //       }
-      //       store.commit('setReturnSchedules', res.data)
-      //       console.log(res)
-      //     })
-      //     .catch((err) => {
-      //       console.log(err)
-      //     })
-      //   } else {
-      //     store.commit('setReturnSchedules', [])
-      //   }
-      // this.selected = ''
-      // this.selectedReturn = ''
+        let bodyReturn = {
+            user: user.value.url,
+            schedule: this.bookReturn.url,
+            cabin_type: this.cabinType.url,
+            first_name: ticket.first_name,
+            last_name: ticket.last_name,
+            email: user.value.email,
+            phone: ticket.phone,
+            passport_number: ticket.passport_number,
+            passport_country: this.countryPost.url,
+            booking_reference: `${Date.now()}`,
+            confirmed: false,
+          }
+        await axiosInstance
+          .post('tickets/', bodyReturn)
+          .then(res => {
+            console.log(res.data)
+            ticketsList.push(res.data)
+          })
+          .catch(err => console.log(err))
+        })
+      console.log(ticketsList)
+      store.commit('setTickets', ticketsList)
     },
   }
 }
