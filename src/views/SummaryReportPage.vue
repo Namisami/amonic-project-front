@@ -1,36 +1,47 @@
 <template>
-  <div class="flex flex-col mx-auto my-4 p-4 rounded-md w-fit gap-2">
-    <div class="flex flex-row justify-between font-bold">
-      <p>Field work June 2017 - October 2017</p>
-      <p>Sample Size: {{ mockData.columns[0].subColumns[0].value + mockData.columns[0].subColumns[1].value }} Adults</p>
-    </div>
-    <div class="w-full border-b !border-black" />
-    <div class="font-sans flex border !border-black flex-row mx-auto">
-      <div
-        class="flex flex-col !border-black text-center"
-        v-for="(column, index) in mockData.columns"
-        :class="index !== 0 ? 'border-l' : ''"
-        :key="column.title"
-      >
-        <p class="font-bold border-b !border-black">
-          {{ column.title }}
-        </p>
-        <div class="flex flex-row">
+ <div class="font-sans mx-auto my-4 pb-4 rounded-md border border-blue w-3/4">
+        <div class="flex justify-between border-b-blue border-b p-2">
+            <p class=" text-sm text-blue" >Flight Satisfaction Survey Reports</p>
+            <router-link to="/logout"><img src="close.svg" alt=""></router-link>
+        </div>
+        <div class="flex justify-start gap-2  p-2">
+            <router-link to="/report" class="block  text-sm text-cyan-700">View Results Summary</router-link>
+            <router-link to="/surveyreport" class="block  text-sm text-cyan-700" >View Detailed Results</router-link>
+            <router-link to="/" class="block  text-sm text-cyan-700" >Exit</router-link>
+        </div> 
+      <div class="flex flex-col mx-auto my-4 p-4 rounded-md w-fit gap-2">
+        <div class="flex flex-row justify-between font-bold">
+          <p>Field work June 2017 - October 2017</p>
+          <p>Sample Size: {{ mockData.columns[0].subColumns[0].value + mockData.columns[0].subColumns[1].value }} Adults</p>
+        </div>
+        <div class="w-full border-b !border-black" />
+        <div class="font-sans flex border !border-black flex-row mx-auto">
           <div
-            v-for="(subColumn, index) in column.subColumns"
-            class="flex flex-column"
-            :key="subColumn.title"
+            class="flex flex-col !border-black text-center"
+            v-for="(column, index) in mockData.columns"
+            :class="index !== 0 ? 'border-l' : ''"
+            :key="column.title"
           >
-            <div class="px-2 !border-black font-bold" :class="index !== 0 ? 'border-l' : ''">
-              {{ subColumn.title }}
-            </div>
-            <div class="px-2 !border-black border-t" :class="index !== 0 ? 'border-l' : ''">
-              {{ subColumn.value }}
+            <p class="font-bold border-b !border-black">
+              {{ column.title }}
+            </p>
+            <div class="flex flex-row">
+              <div
+                v-for="(subColumn, index) in column.subColumns"
+                class="flex flex-column"
+                :key="subColumn.title"
+              >
+                <div class="px-2 !border-black font-bold" :class="index !== 0 ? 'border-l' : ''">
+                  {{ subColumn.title }}
+                </div>
+                <div class="px-2 !border-black border-t" :class="index !== 0 ? 'border-l' : ''">
+                  {{ subColumn.value }}
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
   </div>
 </template>
 <script>
@@ -101,46 +112,4 @@ export default {
       .catch(err => console.log(err))
   }
 }
-
-// export default {
-//     data() {
-//         return {
-//             male_count: 0,
-//             female_count: 0,
-//             age_18_24: 0,
-//             age_25_39: 0,
-//             age_40_59: 0,
-//             age_60: 0,
-//             economy: 0,
-//             business: 0,
-//             first: 0,
-//             auh: 0,
-//             bah: 0,
-//             doh: 0,
-//             ryu: 0,
-//             cai: 0,
-//         }
-//     },
-//     async created() {
-//         await axiosInstance
-//             .get('surveys/stats/')
-//             .then(res => {
-//                 this.male_count = res.data.male_count
-//                 this.female_count = res.data.female_count
-//                 this.age_18_24 = res.data.age_18_24
-//                 this.age_25_39 = res.data.age_25_39
-//                 this.age_40_59 = res.data.age_40_59
-//                 this.age_60 = res.data.age_60
-//                 this.economy = res.data.economy
-//                 this.business = res.data.business
-//                 this.first = res.data.first
-//                 this.auh = res.data.auh
-//                 this.bah = res.data.bah
-//                 this.doh = res.data.doh
-//                 this.ryu = res.data.ryu
-//                 this.cai = res.data.cai
-//             })
-//             .catch(err => console.log(err))
-//     }
-// }
 </script>

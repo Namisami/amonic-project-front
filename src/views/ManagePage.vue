@@ -19,18 +19,19 @@
                               </select>
                             </v-col>
                             <v-col cols="12" md="4">
-                              <label for="city-select">To</label>
-                              <select v-model="arrivalAirport" class="ml-2 w-32 border-collapse border-solid border-2 border-black" name="cities" id="city-select">
+                              <label for="city-select-arrival">To</label>
+                              <select v-model="arrivalAirport" class="ml-2 w-32 border-collapse border-solid border-2 border-black" name="cities" id="city-select-arrival">
                                 <option value="">Choose an option</option>
                                 <option v-for="airport in airports" :key="airport.id" :value="airport.iata_code">{{ airport.iata_code }}</option>
                               </select>
                             </v-col>
-                            <v-col cols="12" md="4">
-                              <label for="city-select">Sort by</label>
-                              <select v-model="departureAirport" class="ml-2 w-32 border-collapse border-solid border-2 border-black" name="cities" id="city-select">
-                                <option value="">Choose an option</option>
-                                <option v-for="airport in airports" :key="airport.id" :value="airport.iata_code">{{ airport.iata_code }}</option>
-                              </select>
+
+                            <v-col cols="12"
+                              md="4">
+                              <v-select
+                                
+                                :options="airports.map(g => ({label: g.iata_code, value: g.id}))"
+                              ></v-select>
                             </v-col>
                           </v-row>
                           <v-row>

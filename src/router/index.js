@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import LoginView from '../views/LoginView.vue'
 import LoginPage from '../views/LoginPage.vue'
 import LogoutPage from '../views/LogoutPage.vue'
 import SystemPage from '../views/SystemPage.vue'
@@ -17,6 +16,7 @@ import SummaryPage from '@/views/SummaryPage.vue'
 import SummaryReportPage from '@/views/SummaryReportPage.vue'
 import FlightSatisfactionSurveyReport from '@/views/FlightSatisfactionSurveyReport.vue'
 import PurchaseAmenities from '@/views/PurchaseAmenities.vue'
+import ReportPage from '@/views/ReportPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,6 +38,7 @@ const router = createRouter({
     { path: '/report', component: SummaryReportPage },
     { path: '/surveyreport', component: FlightSatisfactionSurveyReport },
     { path: '/amentity', component: PurchaseAmenities },
+    { path: '/amentity-report', component: ReportPage },
   ]
 })
 
