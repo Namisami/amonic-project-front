@@ -63,7 +63,7 @@
                     </table>
                 </fieldset>
                 <fieldset>
-                    <legend>Outbound Flight Details</legend>
+                    <legend>Return Flight Details</legend>
                     <label><input class="input-tr" type="checkbox">Display three before and after</label>
                     <table class="mx-auto w-11/12  border-gray-600 text-sm h-40 border-collapse border  border-gray-500 p-2" border="1">
                         <tr>

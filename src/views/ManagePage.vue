@@ -13,7 +13,8 @@
                           <v-row>
                             <v-col cols="12"
                               md="4">
-                                <select class="w-3/12 border" v-model="selecte">
+                                <label for="">From </label>
+                                <select class="w-10/12 border rounded-md p-2" v-model="selecte">
                                   <option  v-for="airport in airports" :key="airport.id">
                                   {{ airport.iata_code }}
                                   </option>
@@ -22,7 +23,8 @@
 
                             <v-col cols="12"
                               md="4">
-                              <select class="w-3/12 border" v-model="selected">
+                              <label for="">To </label>
+                              <select class="w-10/12 border rounded-md p-2" v-model="selected">
                                   <option  v-for="airport in airports" :key="airport.id">
                                   {{ airport.iata_code}}
                                   </option>
@@ -31,10 +33,12 @@
 
                             <v-col cols="12"
                               md="4">
-                              <v-select
-                                
-                                :options="airports.map(g => ({label: g.iata_code, value: g.id}))"
-                              ></v-select>
+                              <label for="">Sort </label>
+                              <select class="w-10/12 border rounded-md p-2" v-model="selected">
+                                  <option  v-for="airport in airports" :key="airport.id">
+                                  {{ airport.iata_code}}
+                                  </option>
+                                </select>
                             </v-col>
                           </v-row>
                         </v-container>

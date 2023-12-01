@@ -14,8 +14,12 @@ import SearchPage from '../views/SearchPage.vue';
 import BookingPage from '../views/BookingPage.vue';
 import ExitPage from '../views/ExitPage.vue';
 import SummaryPage from '../views/SummaryPage.vue';
+import ReportPage from '../views/ReportPage.vue'
 
 import { store } from '@/store'
+import SummaryReportPage from '@/views/SummaryReportPage.vue'
+import FlightSatisfactionSurveyReport from '@/views/FlightSatisfactionSurveyReport.vue'
+import PurchaseAmenities from '@/views/PurchaseAmenities.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -28,7 +32,7 @@ const router = createRouter({
     { path: '/', component: LoginPage },
     { path: '/login', component: LoginView },
     { path: '/system', component: SystemPage },
-    { path: '/adduser', component: AdduserPage},
+    { path: '/adduser', component: AdduserPage },
     { path: '/logout', component: LogoutPage },
     { path: '/edit', component: ChangerolePage },
     { path: '/manage', component: ManagePage },
@@ -38,8 +42,12 @@ const router = createRouter({
     { path: '/billing', component: BillingPage },
     { path: '/booking', component: BookingPage },
     { path: '/search', component: SearchPage },
-    { path: '/exit', component: ExitPage },
-    { path: '/summary', component: SummaryPage},
+    { path: '/summary-report', component: SummaryReportPage },
+    { path: '/flight-satisfaction-survey-report', component: FlightSatisfactionSurveyReport },
+    { path: '/purchase-amenities', component: PurchaseAmenities },
+    { path: '/report', component: ReportPage },
+    { path: '/summary', component: SummaryPage },
+
   ]
 })
 

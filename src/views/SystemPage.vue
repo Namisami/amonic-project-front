@@ -2,7 +2,7 @@
     <div class="font-sans mx-auto my-4 pb-4 rounded-md border border-blue w-3/4">
         <div class="flex justify-between border-b-blue border-b p-2">
             <p class=" text-sm text-blue" >AMONIC Airlines Automotion System</p>
-            <router-link to="/logout"><img src="close.svg" alt=""></router-link>
+            <router-link to="/login"><img src="close.svg" alt=""></router-link>
         </div>
         <div class="flex justify-start gap-2  p-2">
             <router-link to="/adduser" class="block  text-sm text-cyan-700">Add user</router-link>
